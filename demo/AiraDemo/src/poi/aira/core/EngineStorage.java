@@ -1,0 +1,142 @@
+package poi.aira.core;
+
+import java.util.HashSet;
+import java.util.Set;
+
+public class EngineStorage
+{
+	private StringBuilder text = new StringBuilder();
+	
+	private RelationMap forwardMap = new RelationMap();
+	private RelationMap backwardMap = new RelationMap();
+	
+	private int relationSerial = 0;
+	private char front = 0;
+	
+	public void addNextChar(char next)
+	{
+		forwardMap.addRelation(front, next, relationSerial);
+		backwardMap.addRelation(next, front, relationSerial);
+		
+		++relationSerial;
+		front = next;
+		
+		text.append(next);
+	}
+	
+	public TokenIterator createSelfIterator()
+	{
+		return new TokenIterator(text);
+	}
+	
+	public TokenIterator createTokenIterator(StringBuilder text)
+	{
+		return new TokenIterator(text);
+	}
+	
+	private Set<Integer> getForwardRelation(char from, char to)
+	{
+		return forwardMap.getRelation(from, to);
+	}
+	
+	private Set<Integer> getBackwordRelation(char from, char to)
+	{
+		return backwardMap.getRelation(to, from);
+	}
+	
+	public class TokenIterator
+	{
+		private StringBuilder token = new StringBuilder();
+		private Set<Integer> frontSet = new HashSet<>();
+		private Set<Integer> nextSet = new HashSet<>();
+		
+		private int iter = 0;
+		private StringBuilder src;
+		
+		private TokenIterator(StringBuilder src)
+		{
+			this.src = src;
+		}
+		
+		public String nextToken()
+		{
+			if (iter < src.length())
+			{
+				char from = src.charAt(iter);
+				token.append(from);
+				
+				while (++iter < src.length())
+				{
+					char to = src.charAt(iter);
+					
+					Set<Integer> forwardSet = getForwardRelation(from, to);
+					if (forwardSet != null)
+					{
+						setNextRelationSet(forwardSet);
+						if (isInSameWord(from, to))
+						{
+							token.append(to);
+							swapRelationSet();
+							
+							continue;
+						}
+					}
+					
+					frontSet.clear();
+					return getReturnToken();
+				}
+			}
+			
+			return getReturnToken();
+		}
+		
+		private void swapRelationSet()
+		{
+			Set<Integer> tmp = frontSet;
+			frontSet = nextSet;
+			nextSet = tmp;
+		}
+		
+		private String getReturnToken()
+		{
+			if (token.length() > 0)
+			{
+				String ret = token.toString();
+				token.setLength(0);
+				return ret;
+			}
+			return null;
+		}
+		
+		private void setNextRelationSet(Set<Integer> relationSet)
+		{
+			nextSet.clear();
+			
+			if (frontSet.size() > 0)
+			{
+				for (int s : frontSet)
+				{
+					++s;
+					if (relationSet.contains(s))
+					{
+						nextSet.add(s);
+					}
+				}
+			}
+			else
+			{
+				nextSet.addAll(relationSet);
+			}
+		}
+		
+		private boolean isInSameWord(char from, char to)
+		{
+			//boolean checkForward = nextSet.size() >= 1.2 * forwardMap.getAverageLinkNum(from);
+			//boolean checkBackward = nextSet.size() >= 1.2 * backwardMap.getAverageLinkNum(to);
+			//return checkForward && checkBackward;
+			System.out.printf("%d,%d,%d,%d\n", frontSet.size(), nextSet.size(), forwardMap.getAverageLinkNum(from), backwardMap.getAverageLinkNum(to));
+			return true;
+			//return nextSet.size() >= (0.95 * forwardMap.getAverageLinkNum(from)) && getBackwordRelation(from, to).size() > (1.5 * backwardMap.getAverageLinkNum(to));
+		}
+	}
+}
