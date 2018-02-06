@@ -16,7 +16,7 @@ public class Main
 	{
 		EngineStorage engine = new EngineStorage();
 		
-		BufferedReader rd = new BufferedReader(new InputStreamReader(new FileInputStream("yahari.txt")));
+		BufferedReader rd = new BufferedReader(new InputStreamReader(new FileInputStream("yahari.txt"), "utf-8"));
 		String ln = null;
 		while ((ln = rd.readLine()) != null)
 		{
@@ -29,9 +29,8 @@ public class Main
 		
 		Set<String> tokenSet = new HashSet<>();
 		
-		StringBuilder text = new StringBuilder("比企谷八幡");
-		
-		TokenIterator it = engine.createTokenIterator(text);
+		//StringBuilder text = new StringBuilder("比企谷八幡");
+		TokenIterator it = engine.createSelfIterator();
 		String token = null;
 		while ((token = it.nextToken()) != null)
 		{

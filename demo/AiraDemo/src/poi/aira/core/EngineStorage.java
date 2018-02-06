@@ -10,7 +10,7 @@ public class EngineStorage
 	private RelationMap forwardMap = new RelationMap();
 	private RelationMap backwardMap = new RelationMap();
 	
-	private int relationSerial = 0;
+	private int relationSerial = -1;
 	private char front = 0;
 	
 	public void addNextChar(char next)
@@ -78,8 +78,11 @@ public class EngineStorage
 							token.append(to);
 							swapRelationSet();
 							
+							from = to;
+							
 							continue;
 						}
+						
 					}
 					
 					frontSet.clear();
@@ -131,11 +134,9 @@ public class EngineStorage
 		
 		private boolean isInSameWord(char from, char to)
 		{
-			//boolean checkForward = nextSet.size() >= 1.2 * forwardMap.getAverageLinkNum(from);
-			//boolean checkBackward = nextSet.size() >= 1.2 * backwardMap.getAverageLinkNum(to);
-			//return checkForward && checkBackward;
-			System.out.printf("%d,%d,%d,%d\n", frontSet.size(), nextSet.size(), forwardMap.getAverageLinkNum(from), backwardMap.getAverageLinkNum(to));
-			return true;
+			boolean checkForward = nextSet.size() >= 1.2 * forwardMap.getAverageLinkNum(from);
+			boolean checkBackward = nextSet.size() >= 1.2 * backwardMap.getAverageLinkNum(to);
+			return checkForward && checkBackward;
 			//return nextSet.size() >= (0.95 * forwardMap.getAverageLinkNum(from)) && getBackwordRelation(from, to).size() > (1.5 * backwardMap.getAverageLinkNum(to));
 		}
 	}
