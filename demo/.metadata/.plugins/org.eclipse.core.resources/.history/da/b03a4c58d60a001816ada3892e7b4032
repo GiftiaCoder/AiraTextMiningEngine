@@ -29,9 +29,9 @@ public class Main
 		
 		Set<String> tokenSet = new HashSet<>();
 		
-		StringBuilder text = new StringBuilder("比企谷八幡");
-		//TokenIterator it = engine.createTokenIterator(text);
-		TokenIterator it = engine.createSelfIterator();
+		//StringBuilder text = new StringBuilder("比企谷八幡");
+		//TokenIterator it = engine.createSelfIterator();
+		//TokenIterator it = engine.createSelfIterator();
 		String token = null;
 		while ((token = it.nextToken()) != null)
 		{

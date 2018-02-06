@@ -135,9 +135,9 @@ public class EngineStorage
 		private boolean isInSameWord(char from, char to)
 		{
 			//System.out.printf("f:%d,N:%d,fr:%d,bk:%d\n", frontSet.size(), nextSet.size(), forwardMap.getAverageLinkNum(from), backwardMap.getAverageLinkNum(to));
-			boolean checkForward = nextSet.size() >= 4 * forwardMap.getAverageLinkNum(from);
+			boolean checkForward = nextSet.size() >= 10 * forwardMap.getAverageLinkNum(from);
 			boolean checkBackward = nextSet.size() >= 0.4 * backwardMap.getAverageLinkNum(to);
-			boolean checkDecrease = nextSet.size() >= 0.4 * frontSet.size();
+			boolean checkDecrease = nextSet.size() >= 0.9 * frontSet.size();
 			return checkForward && (checkBackward || checkDecrease);
 		}
 	}
